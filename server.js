@@ -10,55 +10,8 @@ const db = mysql.createConnection(
     password: "",
     database: "employeeTracker_db",
   },
-  console.log("Connected to the employeeTracker_db database.")
+  console.log("Connected to the employeeTracker_db database.🚀")
 );
-
-db.connect(function (err) {
-  if (err) throw err;
-});
-
-const employee_db = () => {
-  console.log("\n");
-  console.log("\x1b[32m%s\x1b[0m", "EMPLOYEE DATABASE");
-  return inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "choice",
-        message: "What would you like to do?",
-        choices: [
-          "View Departments",
-          "View Roles",
-          "View Employees",
-          "Add Department",
-          "Add Role",
-          "Add Employee",
-          "Update Employee Role",
-          "Exit Database!",
-        ],
-      },
-    ])
-    .then(({ choice }) => {
-      if (choice === "View Departments") {
-        view_departments();
-      } else if (choice === "View Roles") {
-        view_roles();
-      } else if (choice === "View Employees") {
-        view_employees();
-      } else if (choice === "Add Department") {
-        add_department();
-      } else if (choice === "Add Role") {
-        add_role();
-      } else if (choice === "Add Employee") {
-        add_employee();
-      } else if (choice === "Update Employee Role") {
-        update_role();
-      } else {
-        console.log("Have a nice day!");
-        db.end();
-      }
-    });
-};
 
 const view_departments = () => {
   let department_db = "SELECT * FROM department";
@@ -189,6 +142,91 @@ const add_employee = () => {
       console.log("\n");
       console.log("Employee added!");
       view_employees();
+    });
+};
+
+const update_role = () => {
+  db.query(
+    `SELECT id AS value, CONCAT(first_name," ",last_name) AS name FROM employee;`,
+    (err, employee) => {
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "id",
+            message: "Which employees role will be updated",
+
+            choices: employee,
+          },
+        ])
+        .then((id) => {
+          db.query(
+            `SELECT id AS value, title AS name FROM roles`,
+            (err, roles) => {
+              inquirer
+                .prompt([
+                  {
+                    type: "list",
+                    name: "role_id",
+                    message: "What is the new role?",
+                    choices: roles,
+                  },
+                ])
+                .then((role_id) => {
+                  db.query("UPDATE employee SET ? WHERE ?", [role_id, id]);
+                })
+                .then(view_employees);
+            }
+          );
+        });
+    }
+  );
+};
+
+db.connect(function (err) {
+  if (err) throw err;
+});
+
+const employee_db = () => {
+  console.log("\n");
+  console.log("\x1b[32m%s\x1b[0m", "EMPLOYEE DATABASE");
+  return inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "choice",
+        message: "What would you like to do?",
+        choices: [
+          "View Departments",
+          "View Roles",
+          "View Employees",
+          "Add Department",
+          "Add Role",
+          "Add Employee",
+          "Update Employee Role",
+          "Exit Database!",
+        ],
+      },
+    ])
+    .then(({ choice }) => {
+      if (choice === "View Departments") {
+        view_departments();
+      } else if (choice === "View Roles") {
+        view_roles();
+      } else if (choice === "View Employees") {
+        view_employees();
+      } else if (choice === "Add Department") {
+        add_department();
+      } else if (choice === "Add Role") {
+        add_role();
+      } else if (choice === "Add Employee") {
+        add_employee();
+      } else if (choice === "Update Employee Role") {
+        update_role();
+      } else {
+        console.log("Have a nice day!");
+        db.end();
+      }
     });
 };
 
