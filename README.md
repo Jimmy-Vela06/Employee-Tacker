@@ -42,7 +42,7 @@ Once the database has been sourced and seeded through mysql the user will run in
 
 ## **Image:**
 
-<img scr="assets/screenShotEmployeeDB.png" alt="screenshot" title="employee_db_screenshot">
+<img scr="./assets/screenShotEmployeeDB.png" alt="screenshot" title="employee_db_screenshot">
 
 ## **License:**
 
